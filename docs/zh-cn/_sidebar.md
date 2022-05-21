@@ -1,0 +1,4 @@
+- [Alkaid Lib 摇光](./zh-cn/readme.md)
+- [添加 Alkaid 依赖](./zh-cn/add-alkaid-dependencies.md)
+- [关于 Alkaid 的设计与实现](./zh-cn/alkaid-about.md)
+- [Alkaid Common 模块](./zh-cn/alkaid-common.md)
