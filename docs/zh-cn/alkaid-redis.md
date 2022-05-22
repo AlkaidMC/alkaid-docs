@@ -15,8 +15,6 @@
 </dependency>
 ```
 
-l
-
 **Gradle**
 
 ```groovy
@@ -98,7 +96,7 @@ SingleRedisConnector connector = new AlkaidRedis().single()
 | set         | String, String             | void       | 使用键与值参数设置一条数据                             |
 | get         | String                     | String     | 使用键获取 Redis 中的数据                              |
 | del         | String                     | void       | 使用键删除 Redis 中的设置                              |
-| expore      | String, int                | void       | 设置已存在的键的过期时间 单位为秒（s）                 |
+| expire      | String, int                | void       | 设置已存在的键值数据的过期时间 单位为秒（s）           |
 | exists      | String                     | boolean    | 使用键判断是否存在于 Redis                             |
 | publish     | String, String             | void       | 提供通道、消息发布一条消息                             |
 | subscribe   | String, Consumer\<String\> | void       | 提供通道和消息处理器处理消息，只能监听指定通道中的消息 |
