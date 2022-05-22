@@ -10,3 +10,4 @@
 - [Alkaid MongoDB 模块](zh-cn/alkaid-mongodb.md)
 - [Alkaid Redis 模块](zh-cn/alkaid-redis.md)
 - [Alkaid World 模块](zh-cn/alkaid-world.md)
+- [贡献](zh-cn/contributing.md)
