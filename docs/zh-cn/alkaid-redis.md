@@ -3,7 +3,7 @@
 
 ## 使用模块
 
-引入 Redis 模块（注意替换版本号）
+引入 Redis 模块与 Redis 驱动依赖（注意替换版本号）
 
 **Maven**
 
@@ -11,20 +11,33 @@
 <dependency>
   <groupId>com.alkaidmc.alkaid</groupId>
   <artifactId>alkaid-redis</artifactId>
-  <version>{{project.version}}</version>
+  <version>{{alkaid.version}}</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+<dependency>
+    <groupId>redis.clients</groupId>
+    <artifactId>jedis</artifactId>
+    <version>{{jedis.version}}</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```groovy
-implementation "com.alkaidmc.alkaid:alkaid-redis:{{project.version}}"
+implementation "com.alkaidmc.alkaid:alkaid-redis:{{alkaid.version}}"
+
+// https://mvnrepository.com/artifact/redis.clients/jedis
+implementation 'redis.clients:jedis:{{jedis.version}}'
 ```
 
 **Gradle Kotlin**
 
 ```kotlin
-implementation("com.alkaidmc.alkaid:alkaid-redis:{{project.version}}")
+implementation("com.alkaidmc.alkaid:alkaid-redis:{{alkaid.version}}")
+
+// https://mvnrepository.com/artifact/redis.clients/jedis
+implementation("redis.clients:jedis:{{jedis.version}}")
 ```
 
 **创建模块引导类**
