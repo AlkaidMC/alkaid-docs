@@ -70,7 +70,6 @@ SingleRedisConnector connector = redis.single();
 | auth    | String          | null                   | apply    | Redis 验证密钥 为 null 时不进行验证                      |
 | connect | int             | 32                     | apply    | 连接池大小（允许的连接数量最大值）                       |
 | timeout | int             | 1000                   | apply    | 每个连接的超时时间 单位毫秒（ms）                        |
-| sleep   | long            | 1000                   | apply    | 消息订阅机制的检测时长 单位毫秒（ms）                    |
 | config  | JedisPoolConfig | new JedisPoolConfig(); | apply    | 连接池配置文件 设置 connect 将覆盖该配置的最大连接数设置 |
 
 **端点操作**
@@ -104,21 +103,38 @@ SingleRedisConnector connector = new AlkaidRedis().single()
 
 **可用接口**
 
-| 方法名      | 参数类型                   | 返回值类型 | 功能                                                   |
-| ----------- | -------------------------- | ---------- | ------------------------------------------------------ |
-| set         | String, String             | void       | 使用键与值参数设置一条数据                             |
-| get         | String                     | String     | 使用键获取 Redis 中的数据                              |
-| del         | String                     | void       | 使用键删除 Redis 中的设置                              |
-| expire      | String, int                | void       | 设置已存在的键值数据的过期时间 单位为秒（s）           |
-| exists      | String                     | boolean    | 使用键判断是否存在于 Redis                             |
-| publish     | String, String             | void       | 提供通道、消息发布一条消息                             |
-| subscribe   | String, Consumer\<String\> | void       | 提供通道和消息处理器处理消息，只能监听指定通道中的消息 |
-| unsubscribe | void                       | void       | 取消订阅                                               |
+| 方法名    | 参数类型                                          | 返回值类型  | 功能                                                         |
+| --------- | ------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| set       | String, String                                    | void        | 使用键与值参数设置一条数据                                   |
+| get       | String                                            | String      | 使用键获取 Redis 中的数据                                    |
+| del       | String                                            | void        | 使用键删除 Redis 中的设置                                    |
+| expire    | String, int                                       | void        | 设置已存在的键值数据的过期时间 单位为秒（s）                 |
+| exists    | String                                            | boolean     | 使用键判断是否存在于 Redis                                   |
+| publish   | String, String                                    | void        | 提供通道、消息发布一条消息                                   |
+| subscribe | String, Consumer\<String\>                        | JedisPubSub | 提供通道和消息处理器处理消息，只能监听指定通道中的消息，第一个参数为指定通道 |
+| subscribe | String, Consumer\<String\>, Consumer\<Throwable\> | JedisPubSub | 提供通道和消息处理器处理消息并可以自定义捕获异常，只能监听指定通道中的消息，第一个参数为指定通道，第三个参数为异常处理器 |
+| subscribe | JedisPubSub, String                               | JedisPubSub | 使用自定义消息处理器对消息进行处理，第二个参数为指定通道     |
+| subscribe | JedisPubSub, String, Consumer\<Throwable\>        | JedisPubSub | 使用自定义消息处理器对消息进行处理并可以自定义捕获异常，第二个参数为指定通道，第三个参数为异常处理器 |
+
+使用 subscribe 方法时即使用 Redis 消息发布 / 订阅机制，方法返回 JedisPubSub 后可使用 unsubscribe 取消订阅
 
 **完整使用案例**
 
 ```java
-public void single() {
+package com.alkaidmc.alkaid.redis;
+
+import org.junit.jupiter.api.Test;
+import redis.clients.jedis.JedisPubSub;
+
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+@SuppressWarnings("unused")
+public class AlkaidRedisTest {
+    @Test
+    public void single() {
         SingleRedisConnection connection = new AlkaidRedis().single()
                 .host("127.0.0.1")
                 .port(6379)
@@ -158,7 +174,7 @@ public void single() {
         assertNull(data);
 
         // 订阅消息
-        connection.subscribe("alkaid", (message) -> {
+        JedisPubSub sub = connection.subscribe("alkaid", (message) -> {
             assertEquals("test", message);
         });
         // 发布消息
@@ -171,6 +187,7 @@ public void single() {
             e.printStackTrace();
         }
     }
+}
 ```
 
 摘自 [Alkaid Redis 模块 GitHub Actions 集成测试](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-redis/src/test/java/com/alkaidmc/alkaid/redis/AlkaidRedisTest.java) 
