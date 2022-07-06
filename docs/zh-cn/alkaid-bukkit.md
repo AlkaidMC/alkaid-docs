@@ -10,7 +10,7 @@
 ```xml
 <dependency>
   <groupId>com.alkaidmc.alkaid</groupId>
-  <artifactId>alkaid-redis</artifactId>
+  <artifactId>alkaid-bukkit</artifactId>
   <version>{{alkaid.version}}</version>
 </dependency>
 ```
@@ -18,13 +18,13 @@
 **Gradle**
 
 ```groovy
-implementation "com.alkaidmc.alkaid:alkaid-redis:{{alkaid.version}}"
+implementation "com.alkaidmc.alkaid:alkaid-bukkit:{{alkaid.version}}"
 ```
 
 **Gradle Kotlin**
 
 ```kotlin
-implementation("com.alkaidmc.alkaid:alkaid-redis:{{alkaid.version}}")
+implementation("com.alkaidmc.alkaid:alkaid-bukkit:{{alkaid.version}}")
 ```
 
 **创建模块引导类**
@@ -70,6 +70,38 @@ Bukkit 模块包含五个分类，它们分别有各自的模块引导类
 | parse()    | [ParseCommandRegister](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/command/ParseCommandRegister.java) | 解析树指令注册器   |
 
 ## 配置文件与序列化 Config
+
+**AlkaidJsonConfiguration**
+
+**AlkaidGsonBuilder**
+
+为了使 Gson 能解析 Bukkit 的对象，Alkaid 提供了三个适配器，分别是 [ItemStackGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/ItemStackGsonAdapter.java)、[LocationGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/LocationGsonAdapter.java) 和 [PlayerGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/PlayerGsonAdapter.java) 它们分别对应 [ItemStack](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemStack.html) [Location](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Location.html) 和 [Player](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Player.html) 几个类型。
+
+使用位于 `AlkaidGsonBuilder` 的静态方法 `gson()` 可以获得一个包含了以上三个适配器的 Gson 解析器。
+
+这是它的实现方法：
+
+```java
+public static Gson gson() {
+    return Optional.ofNullable(gson).orElseGet(() -> {
+        gson = new GsonBuilder()
+                .enableComplexMapKeySerialization()
+                .serializeNulls()
+                .setPrettyPrinting()
+                .registerTypeAdapter(ItemStack.class, new ItemStackGsonAdapter())
+                .registerTypeAdapter(Player.class, new PlayerGsonAdapter())
+                .registerTypeAdapter(Location.class, new LocationGsonAdapter())
+                .create();
+        return gson;
+    });
+}
+```
+
+使用它，只需要一行：
+
+```java
+Gson gson = AlkaidGsonBuilder.gson();
+```
 
 ## 事件 Event
 
