@@ -71,9 +71,9 @@ Bukkit 模块包含五个分类，它们分别有各自的模块引导类
 
 ## 配置文件与序列化 Config
 
-**AlkaidJsonConfiguration**
+### AlkaidJsonConfiguration
 
-**AlkaidGsonBuilder**
+### AlkaidGsonBuilder
 
 为了使 Gson 能解析 Bukkit 的对象，Alkaid 提供了三个适配器，分别是 [ItemStackGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/ItemStackGsonAdapter.java)、[LocationGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/LocationGsonAdapter.java) 和 [PlayerGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/PlayerGsonAdapter.java) 它们分别对应 [ItemStack](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemStack.html) [Location](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Location.html) 和 [Player](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Player.html) 几个类型。
 
