@@ -78,3 +78,59 @@ implementation("com.alkaidmc.alkaid:alkaid-bukkit:1.0.0-SNAPSHOT")
 ## 使用本地依赖
 
 **不推荐使用此方法添加依赖**
+
+## 重定向包名
+
+避免与其他使用了 Alkaid 的插件冲突，需要使用重定向插件进行包名重定向。
+
+这不是必须的工作，但如果你打算将你的插件发布到某一个地方供其他人下载使用则推荐进行包名重定向。
+
+**Maven Shade Plugin**
+
+添加 [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) 插件并进行重定向配置
+
+```xml
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>shade</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <relocations>
+            <relocation>
+              <pattern>com.alkaidmc.alkaid</pattern>
+              <shadedPattern>your.package.name.shadow.com.alkaidmc.alkaid</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+      </plugin>
+   </plugins>
+```
+
+**Gradle Shadow**
+
+添加 [Shadow](https://imperceptiblethoughts.com/shadow/) 插件：
+
+```groovy
+plugins {
+  id 'com.github.johnrengelman.shadow' version '7.1.2'
+  id 'java'
+}
+```
+
+进行配置：
+
+```groovy
+shadowJar {
+   relocate 'com.alkaidmc.alkaid', 'your.package.name.shadow.com.alkaidmc.alkaid'
+}
+```
