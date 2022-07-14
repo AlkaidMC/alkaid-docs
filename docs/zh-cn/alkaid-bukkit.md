@@ -73,6 +73,47 @@ Bukkit 模块包含五个分类，它们分别有各自的模块引导类
 
 ### AlkaidJsonConfiguration
 
+通过 AlkaidJsonConfiguration 从插件文件中释放默认 json 配置文件：
+
+```java
+public class Test extends JavaPlugin {
+    @Data
+    static class TestConfig {
+        String test;
+    }
+    @Override
+    public void onEnable() {
+        TestConfig config = new AlkaidJsonConfiguration().load(
+                this,
+                new Gson(),
+                "config.json",
+                "config.json",
+                TestConfig.class
+        );
+    }
+}
+```
+
+对应的 config.json 文件放置于 resources 根目录下：
+
+```
+{"test": "test"}
+```
+
+其中的 `<T> T load(Plugin plugin, Gson gson, String resource, String path, Class<T> type)` 方法参数分别为 ：
+
+`plugin` 存放 json 资源的插件实例
+
+`gson` 用于解析 json 的 Gson 实例，可以使用 AlkaidGsonBuilder 获取带有序列化适配器的 Gson 实例
+
+`resource` 存放在 resources 目录下的位置
+
+`path` 为保存文件的位置，相对于 plugin 实例的 `getDataFolder()` 目录
+
+`type` 为需要将 json 映射到的数据实体类 （POJO）
+
+**AlkaidJsonConfiguration 不会自动创建缺失的文件夹，请先确保数据文件的上级目录存在**
+
 ### AlkaidGsonBuilder
 
 为了使 Gson 能解析 Bukkit 的对象，Alkaid 提供了三个适配器，分别是 [ItemStackGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/ItemStackGsonAdapter.java)、[LocationGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/LocationGsonAdapter.java) 和 [PlayerGsonAdapter](https://github.com/AlkaidMC/alkaid/blob/main/alkaid-bukkit/src/main/java/com/alkaidmc/alkaid/bukkit/config/gson/PlayerGsonAdapter.java) 它们分别对应 [ItemStack](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemStack.html) [Location](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Location.html) 和 [Player](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Player.html) 几个类型。
